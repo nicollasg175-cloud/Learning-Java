@@ -1,3 +1,4 @@
+package Sistema_Estoque;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,11 +10,7 @@ public class SistemaEstoque {
 
         int opcao; 
 
-        // Listas dinâmicas com ArrayList
-        ArrayList<String> nomes = new ArrayList<>();
-        ArrayList<Double> precos = new ArrayList<>();
-        ArrayList<Integer> quantidades = new ArrayList<>();
-        ArrayList<String> categorias = new ArrayList<>();
+        ArrayList<Produto> estoque = new ArrayList<>();
 
         do {
             exibirMenu();
@@ -22,35 +19,35 @@ public class SistemaEstoque {
             switch(opcao) {
 
                 case 1: 
-                    cadastrarProduto(scanner, nomes, precos, quantidades, categorias);
+                    cadastrarProduto(scanner, estoque);
                     break;
 
                 case 2:
-                    listarProdutos(nomes, precos, quantidades, categorias);
+                    listarProdutos(estoque);
                     break;
 
                 case 3:
-                    buscarProduto(scanner, nomes, precos, quantidades, categorias);
+                    buscarProduto(scanner, estoque);
                     break;
 
                 case 4:
-                    alterarProduto(scanner, nomes, precos, quantidades, categorias);
+                    alterarProduto(scanner, estoque);
                     break;
 
                 case 5: 
-                    removerProduto(scanner, nomes, precos, quantidades, categorias);
+                    removerProduto(scanner, estoque);
                     break;
 
                 case 6:
-                    registrarEntrada(scanner, nomes, quantidades);
+                    registrarEntrada(scanner, estoque);
                     break;
 
                 case 7:
-                    registrarSaida(scanner, nomes, quantidades);
+                    registrarSaida(scanner, estoque);
                     break;
 
                 case 8:
-                    exibirRelatorio(nomes, quantidades);
+                    exibirRelatorio(estoque);
                     break;
 
                 case 9: 
@@ -82,7 +79,7 @@ public class SistemaEstoque {
         System.out.print("Opção: ");
     }
 
-    public static void cadastrarProduto(Scanner scanner, ArrayList<String> nomes, ArrayList<Double> precos, ArrayList<Integer> quantidades, ArrayList<String> categorias) {
+    public static void cadastrarProduto(Scanner scanner, ArrayList<Produto> estoque) {
         scanner.nextLine();
 
         System.out.println("Digite o nome:");
@@ -99,69 +96,68 @@ public class SistemaEstoque {
         System.out.println("Digite a categoria:");
         String categoria = scanner.nextLine();
 
-        nomes.add(nome);
-        precos.add(preco);
-        quantidades.add(quantidade);
-        categorias.add(categoria);
+        estoque.add(new Produto(nome, preco, quantidade, categoria));
 
         System.out.println("Produto cadastrado com sucesso!");
     }
 
-    public static void listarProdutos(ArrayList<String> nomes, ArrayList<Double> precos, ArrayList<Integer> quantidades, ArrayList<String> categorias) {
-        if (nomes.isEmpty()) {
+    public static void listarProdutos(ArrayList<Produto> estoque) {
+        if (estoque.isEmpty()) {
             System.out.println("Nenhum produto cadastrado!");
             return;
         }
 
-        for (int i = 0; i < nomes.size(); i++) {
-            System.out.println(nomes.get(i) + " | R$ " + precos.get(i) + " | " + quantidades.get(i) + " un | " + categorias.get(i));
-        }
+    for (Produto p : estoque) {
+        p.exibirInformacoes();
     }
+}
 
-    public static void buscarProduto(Scanner scanner, ArrayList<String> nomes, ArrayList<Double> precos, ArrayList<Integer> quantidades, ArrayList<String> categorias) {
+    public static void buscarProduto(Scanner scanner, ArrayList<Produto> estoque) {
         scanner.nextLine(); 
         System.out.println("Digite o nome do produto desejado:");
         String busca = scanner.nextLine();
 
-        int indice = localizarIndiceProduto(nomes, busca);
+        int indice = localizarIndiceProduto(estoque, busca);
 
         if (indice != -1) {
-            System.out.println(nomes.get(indice) + " | R$ " + precos.get(indice) + " | " + quantidades.get(indice) + " un | " + categorias.get(indice));
+            estoque.get(indice).exibirInformacoes();
         } else {
             System.out.println("Produto não encontrado!");
         }
     }
 
-    public static int localizarIndiceProduto(ArrayList<String> nomes, String nomeProcurado) {
-        for (int i = 0; i < nomes.size(); i++) {
-            if (nomeProcurado.equalsIgnoreCase(nomes.get(i))) {
+    public static int localizarIndiceProduto(ArrayList<Produto> estoque, String nomeProcurado) {
+        for (int i = 0; i < estoque.size(); i++) {
+            if (nomeProcurado.equalsIgnoreCase(estoque.get(i).nome)) {
                 return i;
             }
         } 
         return -1;
     }
 
-    public static void alterarProduto(Scanner scanner, ArrayList<String> nomes, ArrayList<Double> precos, ArrayList<Integer> quantidades, ArrayList<String> categorias) {
+    public static void alterarProduto(Scanner scanner, ArrayList<Produto> estoque) {
         scanner.nextLine(); 
         System.out.println("Digite o nome do produto que deseja alterar:");
         String produtoProcurado = scanner.nextLine();
 
-        int indice = localizarIndiceProduto(nomes, produtoProcurado);
+        int indice = localizarIndiceProduto(estoque, produtoProcurado);
 
         if (indice != -1) {
             System.out.println("Digite o novo nome:");
-            nomes.set(indice, scanner.nextLine());
+            String novoNome = scanner.nextLine();
 
             System.out.println("Digite o novo preço:");
-            precos.set(indice, scanner.nextDouble());
+            double novoPreco = scanner.nextDouble();
 
             System.out.println("Digite a nova quantidade:");
-            quantidades.set(indice, scanner.nextInt());
+            int novaQuantidade = scanner.nextInt();
 
             scanner.nextLine();
 
             System.out.println("Digite a nova categoria:");
-            categorias.set(indice, scanner.nextLine());
+            String novaCategoria = scanner.nextLine();
+
+            estoque.set(indice, new Produto(novoNome, novoPreco, novaQuantidade, novaCategoria));
 
             System.out.println("Produto alterado com sucesso!");
         } else {
@@ -169,18 +165,15 @@ public class SistemaEstoque {
         }
     }
 
-    public static void removerProduto(Scanner scanner, ArrayList<String> nomes, ArrayList<Double> precos, ArrayList<Integer> quantidades, ArrayList<String> categorias) {
+    public static void removerProduto(Scanner scanner, ArrayList<Produto> estoque) {
         scanner.nextLine(); 
         System.out.println("Digite o nome do produto que deseja remover:");
         String produtoExcluir = scanner.nextLine();
 
-        int indice = localizarIndiceProduto(nomes, produtoExcluir);
+        int indice = localizarIndiceProduto(estoque, produtoExcluir);
 
         if (indice != -1) {
-            nomes.remove(indice);
-            precos.remove(indice);
-            quantidades.remove(indice);
-            categorias.remove(indice);
+            estoque.remove(indice);
 
             System.out.println("Item removido com sucesso!");
         } else {
@@ -188,20 +181,19 @@ public class SistemaEstoque {
         }
     }
 
-    public static void registrarEntrada(Scanner scanner, ArrayList<String> nomes, ArrayList<Integer> quantidades) {
+    public static void registrarEntrada(Scanner scanner, ArrayList<Produto> estoque) {
         scanner.nextLine(); 
         System.out.println("Digite o nome do produto:");
         String produtoEntrada = scanner.nextLine(); 
 
-        int indice = localizarIndiceProduto(nomes, produtoEntrada);
+        int indice = localizarIndiceProduto(estoque, produtoEntrada);
 
         if (indice != -1) { 
             System.out.println("Digite a quantidade de entrada:");
             int quantidade = scanner.nextInt();
 
             if (quantidade > 0) {
-                int novaQuantidade = quantidades.get(indice) + quantidade;
-                quantidades.set(indice, novaQuantidade);
+                estoque.get(indice).quantidade += quantidade;
 
                 System.out.println("Entrada registrada com sucesso!");
             } else {
@@ -212,20 +204,19 @@ public class SistemaEstoque {
         }
     }
 
-    public static void registrarSaida(Scanner scanner, ArrayList<String> nomes, ArrayList<Integer> quantidades) {
+    public static void registrarSaida(Scanner scanner, ArrayList<Produto> estoque) {
         scanner.nextLine();
         System.out.println("Digite o nome do produto:");
         String produtoSaida = scanner.nextLine();
 
-        int indice = localizarIndiceProduto(nomes, produtoSaida);
+        int indice = localizarIndiceProduto(estoque, produtoSaida);
 
         if (indice != -1) {
             System.out.println("Digite a quantidade de saída:");
             int valorSaida = scanner.nextInt();
 
-            if (valorSaida > 0 && valorSaida <= quantidades.get(indice)) {
-                int novaQuantidade = quantidades.get(indice) - valorSaida;
-                quantidades.set(indice, novaQuantidade);
+            if (valorSaida > 0 && valorSaida <= estoque.get(indice).quantidade) {
+                estoque.get(indice).quantidade -= valorSaida;
 
                 System.out.println("Saída registrada com sucesso!");
             } else {
@@ -236,25 +227,25 @@ public class SistemaEstoque {
         }
     }
 
-    public static void exibirRelatorio(ArrayList<String> nomes, ArrayList<Integer> quantidades) {
+    public static void exibirRelatorio(ArrayList<Produto> estoque) {
         int totalUnidades = 0;
 
-        for (int i = 0; i < quantidades.size(); i++) {
-            totalUnidades += quantidades.get(i);
+        for (Produto p : estoque) {
+            totalUnidades += p.quantidade;
         }
 
         System.out.println("\n========== RELATÓRIO DE ESTOQUE ==========");
-        System.out.println("Produtos cadastrados: " + nomes.size());
+        System.out.println("Produtos cadastrados: " + estoque.size());
         System.out.println("Total de unidades: " + totalUnidades);
         System.out.println();
         System.out.println("Produtos com estoque baixo:");
 
         boolean baixo = false;
 
-        for (int i = 0; i < quantidades.size(); i++) {
-            if (quantidades.get(i) <= 5) {
+        for (Produto p : estoque) {
+            if (p.quantidade <= 5) {
                 baixo = true;
-                System.out.println(nomes.get(i) + " - " + quantidades.get(i) + " un");
+                System.out.println(p.nome + " - " + p.quantidade + " un");
             }
         }
 
