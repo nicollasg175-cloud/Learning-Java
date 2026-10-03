@@ -1,0 +1,6 @@
+*.class
+bin/
+.vscode/
+.idea/
+../Sistema PetShop-Java/
+../Sistema*
