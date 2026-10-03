@@ -128,7 +128,7 @@ public class SistemaEstoque {
 
     public static int localizarIndiceProduto(ArrayList<Produto> estoque, String nomeProcurado) {
         for (int i = 0; i < estoque.size(); i++) {
-            if (nomeProcurado.equalsIgnoreCase(estoque.get(i).nome)) {
+            if (nomeProcurado.equalsIgnoreCase(estoque.get(i).getNome())) {
                 return i;
             }
         } 
@@ -193,7 +193,8 @@ public class SistemaEstoque {
             int quantidade = scanner.nextInt();
 
             if (quantidade > 0) {
-                estoque.get(indice).quantidade += quantidade;
+               Produto p = estoque.get(indice);
+               p.setQuantidade(p.getQuantidade() + quantidade);
 
                 System.out.println("Entrada registrada com sucesso!");
             } else {
@@ -215,8 +216,9 @@ public class SistemaEstoque {
             System.out.println("Digite a quantidade de saída:");
             int valorSaida = scanner.nextInt();
 
-            if (valorSaida > 0 && valorSaida <= estoque.get(indice).quantidade) {
-                estoque.get(indice).quantidade -= valorSaida;
+            Produto p = estoque.get(indice);
+        if (valorSaida > 0 && valorSaida <= p.getQuantidade()) { 
+            p.setQuantidade(p.getQuantidade() - valorSaida);
 
                 System.out.println("Saída registrada com sucesso!");
             } else {
@@ -231,7 +233,7 @@ public class SistemaEstoque {
         int totalUnidades = 0;
 
         for (Produto p : estoque) {
-            totalUnidades += p.quantidade;
+            totalUnidades += p.getQuantidade();
         }
 
         System.out.println("\n========== RELATÓRIO DE ESTOQUE ==========");
@@ -243,9 +245,9 @@ public class SistemaEstoque {
         boolean baixo = false;
 
         for (Produto p : estoque) {
-            if (p.quantidade <= 5) {
+            if (p.getQuantidade() <= 5) {
                 baixo = true;
-                System.out.println(p.nome + " - " + p.quantidade + " un");
+                System.out.println(p.getNome() + " - " + p.getQuantidade() + " un");
             }
         }
 
