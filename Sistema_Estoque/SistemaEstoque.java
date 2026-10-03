@@ -1,4 +1,3 @@
-package Sistema_Estoque;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -107,10 +106,10 @@ public class SistemaEstoque {
             return;
         }
 
-    for (Produto p : estoque) {
-        p.exibirInformacoes();
+        for (Produto p : estoque) {
+            p.exibirInformacoes();
+        }
     }
-}
 
     public static void buscarProduto(Scanner scanner, ArrayList<Produto> estoque) {
         scanner.nextLine(); 
@@ -192,14 +191,8 @@ public class SistemaEstoque {
             System.out.println("Digite a quantidade de entrada:");
             int quantidade = scanner.nextInt();
 
-            if (quantidade > 0) {
-               Produto p = estoque.get(indice);
-               p.setQuantidade(p.getQuantidade() + quantidade);
-
-                System.out.println("Entrada registrada com sucesso!");
-            } else {
-                System.out.println("Quantidade inválida!");
-            }
+            // Chama o método especialista do Produto
+            estoque.get(indice).adicionarEstoque(quantidade);
         } else {
             System.out.println("Produto não encontrado no sistema!");
         }
@@ -216,14 +209,8 @@ public class SistemaEstoque {
             System.out.println("Digite a quantidade de saída:");
             int valorSaida = scanner.nextInt();
 
-            Produto p = estoque.get(indice);
-        if (valorSaida > 0 && valorSaida <= p.getQuantidade()) { 
-            p.setQuantidade(p.getQuantidade() - valorSaida);
-
-                System.out.println("Saída registrada com sucesso!");
-            } else {
-                System.out.println("Quantidade inválida ou estoque insuficiente!");
-            }
+            // Chama o método especialista do Produto
+            estoque.get(indice).removerEstoque(valorSaida);
         } else {
             System.out.println("Produto não encontrado no sistema!");
         }
