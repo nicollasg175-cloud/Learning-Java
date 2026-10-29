@@ -6,7 +6,7 @@ public class Produto {
     private String categoria;
 
     public Produto(String nome, double preco, int quantidade, String categoria) {
-        this.nome = nome;
+        this.nome = nome; // Passar o nome para o topo
         setPreco(preco);
         setQuantidade(quantidade);
         this.categoria = categoria;
